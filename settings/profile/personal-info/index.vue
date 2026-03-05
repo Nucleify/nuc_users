@@ -1,5 +1,5 @@
 <template>
-  <nuc-settings-card heading="Account details">
+  <nuc-settings-card :heading="t('profile-account-details')">
     <div class="profile-settings">
       <section class="profile-surface">
         <div class="profile-picture-row">
@@ -40,7 +40,7 @@
             <div>
               <div class="profile-account-line">
                 <p class="profile-picture-title">{{ fullName }}</p>
-                <span class="profile-status">Active</span>
+                <span class="profile-status">{{ t('common-active') }}</span>
               </div>
               <p class="profile-picture-subtitle">{{ form.email }}</p>
               <p class="profile-picture-subtitle">{{ accountPhone }}</p>
@@ -67,7 +67,7 @@
 
       </section>
 
-      <h4 class="profile-section-title">Account preference</h4>
+      <h4 class="profile-section-title">{{ t('profile-account-preference') }}</h4>
 
       <section class="profile-surface">
         <div class="preference-row">
@@ -76,8 +76,8 @@
               <ad-icon icon="prime:language" />
             </span>
             <div>
-              <p class="integration-title">Language</p>
-              <p class="integration-subtitle">Your organizational language</p>
+              <p class="integration-title">{{ t('profile-language') }}</p>
+              <p class="integration-subtitle">{{ t('profile-language-desc') }}</p>
             </div>
           </div>
           <ad-select
@@ -99,8 +99,8 @@
               <ad-icon icon="prime:globe" />
             </span>
             <div>
-              <p class="integration-title">Country</p>
-              <p class="integration-subtitle">Country preference</p>
+              <p class="integration-title">{{ t('profile-country') }}</p>
+              <p class="integration-subtitle">{{ t('profile-country-desc') }}</p>
             </div>
           </div>
           <ad-select
@@ -115,7 +115,7 @@
         </div>
       </section>
 
-      <h4 class="profile-section-title">Security</h4>
+      <h4 class="profile-section-title">{{ t('profile-security') }}</h4>
 
       <section class="profile-surface">
         <div class="preference-row">
@@ -124,12 +124,12 @@
               <ad-icon icon="prime:lock" />
             </span>
             <div>
-              <p class="integration-title">Password</p>
-              <p class="integration-subtitle">Change your account password</p>
+              <p class="integration-title">{{ t('profile-password') }}</p>
+              <p class="integration-subtitle">{{ t('profile-password-desc') }}</p>
             </div>
           </div>
           <ad-button
-            label="Change password"
+            :label="t('profile-change-password')"
             ad-type="main"
             outlined
             size="small"
@@ -145,11 +145,11 @@
               <ad-icon icon="prime:shield" />
             </span>
             <div>
-              <p class="integration-title">Two-factor authentication</p>
-              <p class="integration-subtitle">Add an extra layer of security</p>
+              <p class="integration-title">{{ t('profile-2fa') }}</p>
+              <p class="integration-subtitle">{{ t('profile-2fa-desc') }}</p>
             </div>
           </div>
-          <span class="coming-soon-badge">Coming soon</span>
+          <span class="coming-soon-badge">{{ t('common-coming-soon') }}</span>
         </div>
       </section>
     </div>
@@ -160,9 +160,9 @@
       :draggable="false"
       entity="user"
       action="edit"
-      title="Change password"
-      cancel-button-label="Cancel"
-      confirm-button-label="Update password"
+      :title="t('profile-change-password')"
+      :cancel-button-label="t('common-cancel')"
+      :confirm-button-label="t('profile-update-password')"
       :confirm-button-disabled="isChangingPassword || !isPasswordFormValid"
       :confirm="onChangePassword"
       :close="closePasswordDialog"
@@ -171,7 +171,7 @@
       <template #content>
         <div class="password-dialog-fields">
           <div class="password-dialog-field">
-            <label for="current-password">Current password</label>
+            <label for="current-password">{{ t('profile-current-password') }}</label>
             <ad-password
               id="nuc-pwd-cur"
               v-model="passwordForm.currentPassword"
@@ -182,7 +182,7 @@
             />
           </div>
           <div class="password-dialog-field">
-            <label for="nuc-pwd-new">New password</label>
+            <label for="nuc-pwd-new">{{ t('profile-new-password') }}</label>
             <ad-password
               id="nuc-pwd-new"
               v-model="passwordForm.newPassword"
@@ -192,7 +192,7 @@
             />
           </div>
           <div class="password-dialog-field">
-            <label for="nuc-pwd-confirm">Confirm password</label>
+            <label for="nuc-pwd-confirm">{{ t('profile-confirm-password') }}</label>
             <ad-password
               id="nuc-pwd-confirm"
               v-model="passwordForm.confirmPassword"
@@ -214,6 +214,7 @@
 <script setup lang="ts">
 import { useNuxtApp, useRoute, useRouter } from 'nuxt/app'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import {
   ACCEPTED_IMAGE_TYPES,
@@ -226,6 +227,8 @@ import {
   useAtomicToast,
   userRequests,
 } from 'atomic'
+
+const { t } = useI18n()
 
 const MAX_AVATAR_SIZE_BYTES = 15 * 1024 * 1024
 const DEFAULT_LANGUAGE = 'en'
@@ -327,15 +330,20 @@ const profileEditFields = [
   {
     name: 'firstName',
     key: 'firstName',
-    label: 'First name',
+    label: 'profile-first-name',
     type: 'input-text',
   },
-  { name: 'lastName', key: 'lastName', label: 'Last name', type: 'input-text' },
-  { name: 'email', key: 'email', label: 'Email', type: 'input-text' },
+  {
+    name: 'lastName',
+    key: 'lastName',
+    label: 'profile-last-name',
+    type: 'input-text',
+  },
+  { name: 'email', key: 'email', label: 'profile-email', type: 'input-text' },
   {
     name: 'phone_number',
     key: 'phone_number',
-    label: 'Phone number',
+    label: 'profile-phone-number',
     type: 'input-text',
   },
 ]
@@ -365,20 +373,22 @@ const avatarLabel = computed(() => {
 })
 
 const fullName = computed(() => {
-  return `${form.firstName} ${form.lastName}`.trim() || 'Unknown user'
+  return (
+    `${form.firstName} ${form.lastName}`.trim() || t('profile-unknown-user')
+  )
 })
 
 const accountPhone = computed(
-  () => sessionStorageGetItem('user_phone_number') || 'No phone specified'
+  () => sessionStorageGetItem('user_phone_number') || t('profile-no-phone')
 )
 
 const accountSinceLabel = computed(() => {
   const createdAt = sessionStorageGetItem('user_created_at')
 
-  if (!createdAt) return 'Unknown'
+  if (!createdAt) return t('common-unknown')
 
   const createdDate = new Date(createdAt)
-  if (Number.isNaN(createdDate.getTime())) return 'Unknown'
+  if (Number.isNaN(createdDate.getTime())) return t('common-unknown')
 
   return createdDate.toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -416,13 +426,13 @@ function triggerFileInput(): void {
 
 function validateAvatarFile(file: File, target: HTMLInputElement): boolean {
   if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-    flashToast('Unsupported file type. Use PNG, JPEG, GIF or WEBP.', 'error')
+    flashToast(t('toast-unsupported-file-type'), 'error')
     target.value = ''
     return false
   }
 
   if (file.size > MAX_AVATAR_SIZE_BYTES) {
-    flashToast('Image is too large. Maximum allowed size is 15MB.', 'error')
+    flashToast(t('toast-image-too-large'), 'error')
     target.value = ''
     return false
   }
@@ -471,7 +481,7 @@ async function onCountryChange(newCountry: string): Promise<void> {
   try {
     await savePreferences(userId, { country: newCountry })
   } catch {
-    flashToast('Failed to save country preference.', 'error')
+    flashToast(t('toast-country-save-failed'), 'error')
   }
 }
 </script>

@@ -1,13 +1,13 @@
 <template>
   <div class="profile-actions-wrap">
     <p class="profile-actions-meta">
-      Account active since
+      {{ t('profile-account-since') }}
       <strong>{{ props.accountSinceLabel }}</strong>
     </p>
 
     <div class="profile-actions">
       <ad-button
-        label="Edit account"
+        :label="t('profile-edit-account')"
         ad-type="main"
         outlined
         size="small"
@@ -15,7 +15,7 @@
         @click="isEditProfileDialogVisible = true"
       />
       <ad-button
-        label="Delete account"
+        :label="t('profile-delete-account')"
         outlined
         size="small"
         severity="danger"
@@ -31,12 +31,12 @@
     :draggable="false"
     entity="user"
     action="edit"
-    title="Edit profile"
+    :title="t('profile-edit-profile')"
     :data="editDialogData"
     :selected-object="editDialogData"
     :fields="props.profileEditFields"
-    cancel-button-label="Cancel"
-    confirm-button-label="Save"
+    :cancel-button-label="t('common-cancel')"
+    :confirm-button-label="t('common-save')"
     :confirm-button-disabled="isSavingProfile"
     :confirm="confirmEditProfile"
     :close="closeEditDialog"
@@ -48,10 +48,10 @@
     :modal="true"
     :draggable="false"
     action="delete"
-    title="Delete account"
+    :title="t('profile-delete-account')"
     :selected-object="{ id: props.userId }"
-    cancel-button-label="Cancel"
-    confirm-button-label="Delete"
+    :cancel-button-label="t('common-cancel')"
+    :confirm-button-label="t('common-delete')"
     :confirm-button-disabled="isDeletingAccount"
     :confirm="confirmDeleteAccount"
     :close="closeDeleteDialog"
@@ -59,7 +59,7 @@
   >
     <template #content>
       <p>
-        Are you sure you want to delete your account? This action cannot be undone.
+        {{ t('profile-delete-confirm') }}
       </p>
     </template>
   </nuc-dialog>
@@ -67,9 +67,12 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import type { UseToastInterface } from 'atomic'
 import { useAtomicToast, userRequests } from 'atomic'
+
+const { t } = useI18n()
 
 type ProfileEditDataType = {
   firstName: string
@@ -135,7 +138,7 @@ async function confirmEditProfile(data?: ProfileEditDataType): Promise<void> {
   const phoneNumber = data?.phone_number ?? ''
 
   if (!firstName.trim() || !email.trim()) {
-    flashToast('First name and email are required.', 'error')
+    flashToast(t('toast-name-email-required'), 'error')
     return
   }
 

@@ -1,11 +1,11 @@
 <template>
-  <nuc-settings-card heading="Email Notifications">
+  <nuc-settings-card :heading="t('notifications-email-heading')">
     <div class="profile-form">
       <div class="profile-form-toggle-row">
         <div>
-          <ad-label text="Account Updates" />
+          <ad-label :text="t('notifications-account-updates')" />
           <p class="profile-form-description">
-            Receive emails about account activity and security
+            {{ t('notifications-account-updates-desc') }}
           </p>
         </div>
         <ad-checkbox v-model="notifications.accountUpdates" binary />
@@ -13,9 +13,9 @@
 
       <div class="profile-form-toggle-row">
         <div>
-          <ad-label text="Weekly Digest" />
+          <ad-label :text="t('notifications-weekly-digest')" />
           <p class="profile-form-description">
-            Get a weekly summary of your activity
+            {{ t('notifications-weekly-digest-desc') }}
           </p>
         </div>
         <ad-checkbox v-model="notifications.weeklyDigest" binary />
@@ -25,13 +25,13 @@
 
   <hr class="settings-card-divider">
 
-  <nuc-settings-card heading="Push Notifications">
+  <nuc-settings-card :heading="t('notifications-push-heading')">
     <div class="profile-form">
       <div class="profile-form-toggle-row">
         <div>
-          <ad-label text="Enable Push Notifications" />
+          <ad-label :text="t('notifications-push-enable')" />
           <p class="profile-form-description">
-            Receive real-time push notifications in your browser
+            {{ t('notifications-push-enable-desc') }}
           </p>
         </div>
         <ad-checkbox v-model="notifications.pushEnabled" binary />
@@ -41,13 +41,13 @@
 
   <hr class="settings-card-divider">
 
-  <nuc-settings-card heading="Activity Alerts">
+  <nuc-settings-card :heading="t('notifications-activity-heading')">
     <div class="profile-form">
       <div class="profile-form-toggle-row">
         <div>
-          <ad-label text="Mentions" />
+          <ad-label :text="t('notifications-mentions')" />
           <p class="profile-form-description">
-            Notify when someone mentions you
+            {{ t('notifications-mentions-desc') }}
           </p>
         </div>
         <ad-checkbox v-model="notifications.mentions" binary />
@@ -55,9 +55,9 @@
 
       <div class="profile-form-toggle-row">
         <div>
-          <ad-label text="Comments" />
+          <ad-label :text="t('notifications-comments')" />
           <p class="profile-form-description">
-            Notify when someone comments on your content
+            {{ t('notifications-comments-desc') }}
           </p>
         </div>
         <ad-checkbox v-model="notifications.comments" binary />
@@ -65,9 +65,9 @@
 
       <div class="profile-form-toggle-row">
         <div>
-          <ad-label text="Updates" />
+          <ad-label :text="t('notifications-updates')" />
           <p class="profile-form-description">
-            Notify about system updates and new features
+            {{ t('notifications-updates-desc') }}
           </p>
         </div>
         <ad-checkbox v-model="notifications.systemUpdates" binary />
@@ -78,6 +78,9 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const notifications = reactive({
   accountUpdates: true,
