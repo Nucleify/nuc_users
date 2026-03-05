@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 class UserService
@@ -148,12 +149,7 @@ class UserService
                 "Test Admin can't update admin",
             ],
 
-            [str_contains($this->causer->name, 'Test Admin') && $this->causer->id === $result->id,
-                "User: ''{$this->causer->name}'' tried to update his user data, but he can't update himself",
-                "Test Admin can't update himself",
-            ],
-
-            [str_contains($this->causer->name, 'Test Admin') && str_contains($result->name, 'Test'),
+            [str_contains($this->causer->name, 'Test Admin') && str_contains($result->name, 'Test') && $this->causer->id !== $result->id,
                 "User: ''{$this->causer->name}'' tried to update test user data, but he can't update test users",
                 "Test Admin can't update test users",
             ],
@@ -180,6 +176,53 @@ class UserService
         $this->logger->log($this->causer->name, $result->name, $this->entity, 'updated');
 
         return new UserResource($result->fresh());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function changePassword($id, string $newPassword): UserResource
+    {
+        $this->defineUserData();
+
+        $user = $this->model::findOrFail($id);
+
+        if ($this->causer->id !== $user->id) {
+            $this->logger->logAndThrow(
+                "User: ''{$this->causer->name}'' tried to change password for another user",
+                'You can only change your own password'
+            );
+        }
+
+        $user->update(['password' => Hash::make($newPassword)]);
+
+        $this->logger->log($this->causer->name, $user->name, $this->entity, 'changed password for');
+
+        return new UserResource($user->fresh());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function savePreferences($id, array $data): UserResource
+    {
+        $this->defineUserData();
+
+        $user = $this->model::findOrFail($id);
+
+        if ($this->causer->id !== $user->id) {
+            $this->logger->logAndThrow(
+                "User: ''{$this->causer->name}'' tried to update preferences for another user",
+                'You can only update your own preferences'
+            );
+        }
+
+        $allowed = array_intersect_key($data, array_flip(['language', 'country']));
+        $user->update($allowed);
+
+        $this->logger->log($this->causer->name, $user->name, $this->entity, 'updated preferences for');
+
+        return new UserResource($user->fresh());
     }
 
     /**
@@ -217,6 +260,34 @@ class UserService
         $this->logger->log($this->causer->name, $user->name, $this->entity, 'updated avatar for');
 
         return new UserResource($user->fresh());
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function showAvatar($id): string
+    {
+        $this->defineUserData();
+
+        $user = $this->model::findOrFail($id);
+
+        if (!$this->isCauserStaff && $this->causer->id !== $user->id) {
+            $this->logger->logAndThrow(
+                "User: ''{$this->causer->name}'' tried to view avatar for another user",
+                "You don't have permission to view this user's avatar"
+            );
+        }
+
+        if (!$user->avatar || !Storage::disk('public')->exists($user->avatar)) {
+            $this->logger->logAndThrow(
+                "User: ''{$this->causer->name}'' tried to view missing avatar for user: ''{$user->name}''",
+                'Avatar not found'
+            );
+        }
+
+        $this->logger->log($this->causer->name, $user->name, $this->entity, 'viewed avatar for');
+
+        return $user->avatar;
     }
 
     /**
@@ -269,12 +340,7 @@ class UserService
                 "Test Admin can't delete admin",
             ],
 
-            [str_contains($this->causer->name, 'Test Admin') && $this->causer->id === $result->id,
-                "User: ''{$this->causer->name}'' tried to delete his user data, but he can't delete himself",
-                "Test Admin can't delete himself",
-            ],
-
-            [str_contains($this->causer->name, 'Test Admin') && str_contains($result->name, 'Test'),
+            [str_contains($this->causer->name, 'Test Admin') && str_contains($result->name, 'Test') && $this->causer->id !== $result->id,
                 "User: ''{$this->causer->name}'' tried to delete test user data, but he can't delete test users",
                 "Test Admin can't delete test users",
             ],

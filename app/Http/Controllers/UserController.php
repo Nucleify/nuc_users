@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\PostRequest;
 use App\Http\Requests\User\PutRequest;
 use App\Models\User;
@@ -9,6 +10,8 @@ use App\Services\UserService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserController extends Controller
 {
@@ -82,6 +85,40 @@ class UserController extends Controller
         }
     }
 
+    public function changePassword(ChangePasswordRequest $request, $id): JsonResponse
+    {
+        try {
+            $input = $request->validated();
+            $result = $this->service->changePassword($id, $input['password']);
+
+            return response()->json([
+                $result,
+                'message' => 'Password changed successfully',
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function savePreferences(Request $request, $id): JsonResponse
+    {
+        try {
+            $input = $request->validate([
+                'language' => 'nullable|string|max:10',
+                'country' => 'nullable|string|max:50',
+            ]);
+
+            $result = $this->service->savePreferences($id, $input);
+
+            return response()->json([
+                $result,
+                'message' => 'Preferences saved successfully',
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function uploadAvatar(Request $request, $id): JsonResponse
     {
         try {
@@ -109,6 +146,17 @@ class UserController extends Controller
                 $result,
                 'message' => 'Avatar removed successfully',
             ]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function showAvatar($id): JsonResponse|StreamedResponse
+    {
+        try {
+            $path = $this->service->showAvatar($id);
+
+            return Storage::disk('public')->response($path);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

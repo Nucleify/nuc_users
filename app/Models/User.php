@@ -15,7 +15,10 @@ use Multicaret\Acquaintances\Traits\Friendable;
  * @property int id
  * @property string name
  * @property string email
+ * @property string|null phone_number
  * @property string|null avatar
+ * @property string language
+ * @property string country
  * @property string password
  * @property string role
  * @property string created_at
@@ -23,7 +26,10 @@ use Multicaret\Acquaintances\Traits\Friendable;
  * @property int getId()
  * @property string getName()
  * @property string getEmail()
+ * @property string|null getPhoneNumber()
  * @property string|null getAvatar()
+ * @property string getLanguage()
+ * @property string getCountry()
  * @property string getRole()
  * @property string getCreatedAt()
  * @property string getUpdatedAt()
@@ -62,7 +68,10 @@ class User extends Authenticatable implements UserContract
     protected $fillable = [
         'name',
         'email',
+        'phone_number',
         'avatar',
+        'language',
+        'country',
         'password',
         'role',
         'is_demo',
@@ -99,9 +108,24 @@ class User extends Authenticatable implements UserContract
         return $this->email;
     }
 
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phone_number;
+    }
+
     public function getAvatar(): ?string
     {
         return $this->avatar;
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    public function getCountry(): string
+    {
+        return $this->country;
     }
 
     public function getRole(): string

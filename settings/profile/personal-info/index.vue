@@ -1,10 +1,6 @@
 <template>
   <nuc-settings-card heading="Account details">
     <div class="profile-settings">
-      <section class="profile-section">
-        <h4 class="profile-section-title">Your organizational account details, activity status</h4>
-      </section>
-
       <section class="profile-surface">
         <div class="profile-picture-row">
           <div class="profile-picture-left">
@@ -31,6 +27,14 @@
               >
                 <ad-icon icon="prime:pencil" />
               </div>
+              <div
+                v-if="avatarPreview"
+                class="avatar-delete-corner"
+                :class="{ disabled: isDeletingAvatar || isUploadingAvatar }"
+                @click="onRemoveAvatarClick"
+              >
+                <ad-icon icon="prime:trash" />
+              </div>
             </div>
 
             <div>
@@ -40,42 +44,16 @@
               </div>
               <p class="profile-picture-subtitle">{{ form.email }}</p>
               <p class="profile-picture-subtitle">{{ accountPhone }}</p>
-              <p class="profile-picture-meta">
-                Account active since
-                <strong>{{ accountSinceLabel }}</strong>
-              </p>
             </div>
           </div>
 
-          <div class="avatar-actions">
-            <ad-button
-              :label="isSavingProfile ? 'Saving...' : 'Edit'"
-              ad-type="main"
-              outlined
-              size="small"
-              :disabled="isSavingProfile"
-              @click="saveProfile"
-            />
-            <ad-button
-              label="Cancel account"
-              ad-type="main"
-              outlined
-              size="small"
-              severity="danger"
-              disabled
-            />
-          </div>
-        </div>
-
-        <div class="avatar-upload-actions">
-          <ad-button
-            v-if="avatarPreview"
-            :label="isDeletingAvatar ? 'Deleting...' : 'Delete'"
-            ad-type="main"
-            outlined
-            size="small"
-            :disabled="isDeletingAvatar || isUploadingAvatar"
-            @click="removeAvatar"
+          <nuc-profile-actions
+            :user-id="userId"
+            :current-lang="currentLang"
+            :account-since-label="accountSinceLabel"
+            :edit-profile-data="editProfileData"
+            :profile-edit-fields="profileEditFields"
+            @profile-saved="onProfileSaved"
           />
         </div>
 
@@ -87,36 +65,16 @@
           @change="onFileSelected"
         />
 
-        <hr class="settings-card-divider">
-
-        <div class="profile-export-row">
-          <div>
-            <h4 class="profile-section-title">Export account data</h4>
-            <p class="profile-section-subtitle">
-              Create with XML/JSON file all your account data
-            </p>
-          </div>
-          <ad-button
-            label="Export data"
-            ad-type="main"
-            text
-            size="small"
-            disabled
-          />
-        </div>
       </section>
 
-      <section class="profile-section">
-        <h4 class="profile-section-title">Account preference</h4>
-        <p class="profile-section-subtitle">
-          Your organizational account interface, language and localization.
-        </p>
-      </section>
+      <h4 class="profile-section-title">Account preference</h4>
 
       <section class="profile-surface">
         <div class="preference-row">
           <div class="preference-left">
-            <span class="integration-icon">A</span>
+            <span class="integration-icon">
+              <ad-icon icon="prime:language" />
+            </span>
             <div>
               <p class="integration-title">Language</p>
               <p class="integration-subtitle">Your organizational language</p>
@@ -129,6 +87,7 @@
             option-value="value"
             ad-type="main"
             class="profile-select"
+            @update:model-value="onLanguageChange"
           />
         </div>
 
@@ -136,7 +95,9 @@
 
         <div class="preference-row">
           <div class="preference-left">
-            <span class="integration-icon">G</span>
+            <span class="integration-icon">
+              <ad-icon icon="prime:globe" />
+            </span>
             <div>
               <p class="integration-title">Country</p>
               <p class="integration-subtitle">Country preference</p>
@@ -144,50 +105,204 @@
           </div>
           <ad-select
             v-model="preferences.country"
-            :options="countryOptions"
+            :options="countries"
             option-label="label"
             option-value="value"
             ad-type="main"
             class="profile-select"
+            @update:model-value="onCountryChange"
           />
         </div>
       </section>
+
+      <h4 class="profile-section-title">Security</h4>
+
+      <section class="profile-surface">
+        <div class="preference-row">
+          <div class="preference-left">
+            <span class="integration-icon">
+              <ad-icon icon="prime:lock" />
+            </span>
+            <div>
+              <p class="integration-title">Password</p>
+              <p class="integration-subtitle">Change your account password</p>
+            </div>
+          </div>
+          <ad-button
+            label="Change password"
+            ad-type="main"
+            outlined
+            size="small"
+            @click="isPasswordDialogVisible = true"
+          />
+        </div>
+
+        <hr class="settings-card-divider">
+
+        <div class="preference-row">
+          <div class="preference-left">
+            <span class="integration-icon">
+              <ad-icon icon="prime:shield" />
+            </span>
+            <div>
+              <p class="integration-title">Two-factor authentication</p>
+              <p class="integration-subtitle">Add an extra layer of security</p>
+            </div>
+          </div>
+          <span class="coming-soon-badge">Coming soon</span>
+        </div>
+      </section>
     </div>
+
+    <nuc-dialog
+      :visible="isPasswordDialogVisible"
+      :modal="true"
+      :draggable="false"
+      entity="user"
+      action="edit"
+      title="Change password"
+      cancel-button-label="Cancel"
+      confirm-button-label="Update password"
+      :confirm-button-disabled="isChangingPassword || !isPasswordFormValid"
+      :confirm="onChangePassword"
+      :close="closePasswordDialog"
+      @update:visible="isPasswordDialogVisible = $event"
+    >
+      <template #content>
+        <div class="password-dialog-fields">
+          <div class="password-dialog-field">
+            <label for="current-password">Current password</label>
+            <ad-password
+              id="nuc-pwd-cur"
+              v-model="passwordForm.currentPassword"
+              ad-type="main"
+              :feedback="false"
+              toggle-mask
+              autocomplete="one-time-code"
+            />
+          </div>
+          <div class="password-dialog-field">
+            <label for="nuc-pwd-new">New password</label>
+            <ad-password
+              id="nuc-pwd-new"
+              v-model="passwordForm.newPassword"
+              ad-type="main"
+              toggle-mask
+              autocomplete="one-time-code"
+            />
+          </div>
+          <div class="password-dialog-field">
+            <label for="nuc-pwd-confirm">Confirm password</label>
+            <ad-password
+              id="nuc-pwd-confirm"
+              v-model="passwordForm.confirmPassword"
+              ad-type="main"
+              toggle-mask
+              autocomplete="one-time-code"
+              :passwords-match="doPasswordsMatch"
+              :empty-password="isEmpty(passwordForm.newPassword)"
+              :empty-confirm-password="isEmpty(passwordForm.confirmPassword)"
+            />
+          </div>
+        </div>
+      </template>
+    </nuc-dialog>
+
   </nuc-settings-card>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { useNuxtApp, useRoute, useRouter } from 'nuxt/app'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 
-import type { UseToastInterface } from 'atomic'
 import {
-  apiRequest,
-  getAndSetUser,
+  ACCEPTED_IMAGE_TYPES,
+  countries,
+  isEmpty,
+  NucProfileActions,
+  passwordsMatch,
   sessionStorageGetItem,
+  sessionStorageSetItem,
   useAtomicToast,
+  userRequests,
 } from 'atomic'
 
-import type { NucUserObjectInterface } from '../../../atomic/bosons/types/object/User/interfaces'
-import { userRequests } from '../../../atomic/bosons/utils/api/user_requests'
-
 const MAX_AVATAR_SIZE_BYTES = 15 * 1024 * 1024
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/gif',
-  'image/webp',
-]
+const DEFAULT_LANGUAGE = 'en'
+const DEFAULT_COUNTRY = 'poland'
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const avatarPreview = ref<string | null>(null)
 const isUploadingAvatar = ref(false)
 const isDeletingAvatar = ref(false)
-const isSavingProfile = ref(false)
 
 const userId = Number(sessionStorageGetItem('user_id'))
+const route = useRoute()
+const router = useRouter()
+const nuxtApp = useNuxtApp()
+const currentLang = computed(
+  () => (route.params.lang as string) || DEFAULT_LANGUAGE
+)
 
-const { flashToast }: UseToastInterface = useAtomicToast()
+const { flashToast } = useAtomicToast()
+const {
+  handleRemoveAvatar,
+  handleUploadAvatar,
+  handleChangePassword,
+  savePreferences,
+  refreshAvatarPreview,
+} = userRequests()
+
+const isChangingPassword = ref(false)
+const isPasswordDialogVisible = ref(false)
+
+watch(isPasswordDialogVisible, (visible) => {
+  if (visible) {
+    setTimeout(() => resetPasswordForm(), 50)
+  }
+})
+
+const passwordForm = reactive({
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: '',
+})
+
+const doPasswordsMatch = computed(() =>
+  passwordsMatch(passwordForm.newPassword, passwordForm.confirmPassword)
+)
+
+const isPasswordFormValid = computed(
+  () =>
+    passwordForm.currentPassword.length > 0 &&
+    passwordForm.newPassword.length >= 8 &&
+    doPasswordsMatch.value
+)
+
+function resetPasswordForm(): void {
+  passwordForm.currentPassword = ''
+  passwordForm.newPassword = ''
+  passwordForm.confirmPassword = ''
+}
+
+function closePasswordDialog(): void {
+  isPasswordDialogVisible.value = false
+  resetPasswordForm()
+}
+
+async function onChangePassword(): Promise<void> {
+  await handleChangePassword(
+    userId,
+    passwordForm.currentPassword,
+    passwordForm.newPassword,
+    passwordForm.confirmPassword,
+    isChangingPassword
+  )
+  closePasswordDialog()
+}
+
+const onRemoveAvatarClick = (): Promise<void> =>
+  handleRemoveAvatar(userId, isDeletingAvatar, avatarPreview)
 
 const form = reactive({
   firstName: '',
@@ -196,20 +311,51 @@ const form = reactive({
 })
 
 const preferences = reactive({
-  language: 'en',
-  country: 'netherlands',
+  language: sessionStorageGetItem('user_language') || currentLang.value,
+  country: sessionStorageGetItem('user_country') || DEFAULT_COUNTRY,
 })
+
+const editProfileData = computed(() => ({
+  firstName: form.firstName,
+  lastName: form.lastName,
+  email: form.email,
+  phone_number:
+    accountPhone.value === 'No phone specified' ? '' : accountPhone.value,
+}))
+
+const profileEditFields = [
+  {
+    name: 'firstName',
+    key: 'firstName',
+    label: 'First name',
+    type: 'input-text',
+  },
+  { name: 'lastName', key: 'lastName', label: 'Last name', type: 'input-text' },
+  { name: 'email', key: 'email', label: 'Email', type: 'input-text' },
+  {
+    name: 'phone_number',
+    key: 'phone_number',
+    label: 'Phone number',
+    type: 'input-text',
+  },
+]
+
+function onProfileSaved(data: {
+  firstName: string
+  lastName: string
+  email: string
+  phone_number: string
+}): void {
+  form.firstName = data.firstName
+  form.lastName = data.lastName
+  form.email = data.email
+  sessionStorageSetItem('user_phone_number', data.phone_number || '')
+}
 
 const languageOptions = [
   { label: 'English', value: 'en' },
-  { label: 'Polish', value: 'pl' },
-  { label: 'Vietnamese', value: 'vn' },
-]
-
-const countryOptions = [
-  { label: 'Netherlands', value: 'netherlands' },
-  { label: 'Poland', value: 'poland' },
-  { label: 'Germany', value: 'germany' },
+  { label: 'Polski', value: 'pl' },
+  { label: 'Tiếng Việt', value: 'vn' },
 ]
 
 const avatarLabel = computed(() => {
@@ -223,7 +369,7 @@ const fullName = computed(() => {
 })
 
 const accountPhone = computed(
-  () => sessionStorageGetItem('user_phone') ?? '+44 20 7323 4667'
+  () => sessionStorageGetItem('user_phone_number') || 'No phone specified'
 )
 
 const accountSinceLabel = computed(() => {
@@ -247,17 +393,9 @@ function splitName(name: string): void {
   form.lastName = parts.slice(1).join(' ')
 }
 
-async function refreshAvatarPreview(): Promise<void> {
+async function loadAvatarPreview(): Promise<void> {
   try {
-    const response = await apiRequest<NucUserObjectInterface>(
-      `${apiUrl()}/user`
-    )
-    const avatarPath = (response as NucUserObjectInterface)?.avatar
-    const appBaseUrl = appUrl().replace(/\/$/, '')
-
-    avatarPreview.value = avatarPath
-      ? `${appBaseUrl}/storage/${avatarPath}`
-      : null
+    avatarPreview.value = await refreshAvatarPreview(userId)
   } catch {
     avatarPreview.value = null
   }
@@ -265,11 +403,31 @@ async function refreshAvatarPreview(): Promise<void> {
 
 onMounted(async () => {
   splitName(sessionStorageGetItem('user_name') ?? '')
-  await refreshAvatarPreview()
+  await loadAvatarPreview()
+})
+
+watch(currentLang, (newLang) => {
+  preferences.language = newLang
 })
 
 function triggerFileInput(): void {
   fileInputRef.value?.click()
+}
+
+function validateAvatarFile(file: File, target: HTMLInputElement): boolean {
+  if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+    flashToast('Unsupported file type. Use PNG, JPEG, GIF or WEBP.', 'error')
+    target.value = ''
+    return false
+  }
+
+  if (file.size > MAX_AVATAR_SIZE_BYTES) {
+    flashToast('Image is too large. Maximum allowed size is 15MB.', 'error')
+    target.value = ''
+    return false
+  }
+
+  return true
 }
 
 function onFileSelected(event: Event): void {
@@ -277,83 +435,47 @@ function onFileSelected(event: Event): void {
   const file = target.files?.[0]
 
   if (!file) return
-
-  if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-    flashToast('Unsupported file type. Use PNG, JPEG, GIF or WEBP.', 'error')
-    target.value = ''
-    return
-  }
-
-  if (file.size > MAX_AVATAR_SIZE_BYTES) {
-    flashToast('Image is too large. Maximum allowed size is 15MB.', 'error')
-    target.value = ''
-    return
-  }
+  if (!validateAvatarFile(file, target)) return
 
   avatarPreview.value = URL.createObjectURL(file)
-  void uploadAvatar(file)
+  void handleUploadAvatar(
+    userId,
+    file,
+    isUploadingAvatar,
+    fileInputRef,
+    avatarPreview
+  )
 }
 
-async function uploadAvatar(file: File): Promise<void> {
-  const formData = new FormData()
-  formData.append('avatar', file)
+async function onLanguageChange(newLang: string): Promise<void> {
+  if (!newLang || newLang === currentLang.value) return
+
+  // biome-ignore lint/suspicious/noExplicitAny: $i18n is provided by @nuxtjs/i18n
+  const i18n = nuxtApp.$i18n as any
+  if (i18n) {
+    i18n.locale.value = newLang
+  }
+
+  const newPath = route.fullPath.replace(
+    `/${currentLang.value}/`,
+    `/${newLang}/`
+  )
+
+  await savePreferences(userId, { language: newLang })
+  await router.push(newPath)
+}
+
+async function onCountryChange(newCountry: string): Promise<void> {
+  if (!newCountry) return
 
   try {
-    isUploadingAvatar.value = true
-    await apiRequest(`${apiUrl()}/users/${userId}/avatar`, 'POST', formData)
-    await refreshAvatarPreview()
-    await getAndSetUser()
-    flashToast('Profile picture updated successfully.', 'success')
+    await savePreferences(userId, { country: newCountry })
   } catch {
-    flashToast('Avatar upload failed. Please try again.', 'error')
-    await refreshAvatarPreview()
-  } finally {
-    isUploadingAvatar.value = false
-    if (fileInputRef.value) {
-      fileInputRef.value.value = ''
-    }
-  }
-}
-
-async function removeAvatar(): Promise<void> {
-  try {
-    isDeletingAvatar.value = true
-    await apiRequest(`${apiUrl()}/users/${userId}/avatar`, 'DELETE')
-    avatarPreview.value = null
-    await refreshAvatarPreview()
-    await getAndSetUser()
-    flashToast('Profile picture removed.', 'success')
-  } catch {
-    flashToast('Failed to remove profile picture.', 'error')
-  } finally {
-    isDeletingAvatar.value = false
-  }
-}
-
-async function saveProfile(): Promise<void> {
-  if (!form.firstName.trim() || !form.email.trim()) {
-    flashToast('First name and email are required.', 'error')
-    return
-  }
-
-  const { editUser } = userRequests()
-  const fullName = `${form.firstName} ${form.lastName}`.trim()
-
-  const data: NucUserObjectInterface = {
-    id: userId,
-    name: fullName,
-    email: form.email.trim(),
-    role: sessionStorageGetItem('user_role') ?? 'user',
-  }
-
-  try {
-    isSavingProfile.value = true
-    await editUser(data, async () => {
-      await getAndSetUser()
-    })
-    flashToast('Profile details saved.', 'success')
-  } finally {
-    isSavingProfile.value = false
+    flashToast('Failed to save country preference.', 'error')
   }
 }
 </script>
+
+<style lang="scss">
+@import 'index';
+</style>

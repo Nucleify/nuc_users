@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class PutRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,19 @@ class PutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:3|max:30',
-            'email' => 'required|email|min:3|max:70',
-            'phone_number' => 'nullable|string|min:3|max:30',
-            'language' => 'nullable|string|max:10',
-            'country' => 'nullable|string|max:50',
-            'password' => 'min:8|max:50',
-            'role' => 'required|in:user,tech,test_admin,admin,super_admin',
+            'current_password' => 'required|string|current_password',
+            'password' => 'required|string|min:8|max:50|confirmed',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'current_password.current_password' => 'The current password is incorrect.',
+            'password.confirmed' => 'Password confirmation does not match.',
         ];
     }
 }

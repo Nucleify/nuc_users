@@ -10,6 +10,12 @@ interface UserContract
 
     public function getEmail(): string;
 
+    public function getPhoneNumber(): ?string;
+
+    public function getLanguage(): string;
+
+    public function getCountry(): string;
+
     public function getRole(): string;
 
     public function getCreatedAt(): string;

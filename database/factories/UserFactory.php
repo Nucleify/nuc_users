@@ -17,6 +17,8 @@ class UserFactory extends Factory
             'id' => $this->faker->unique()->numberBetween(10, 10000),
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
+            'language' => $this->faker->randomElement(['en', 'pl', 'vn']),
+            'country' => $this->faker->randomElement(['poland', 'germany', 'france']),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),

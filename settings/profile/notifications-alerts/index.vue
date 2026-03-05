@@ -88,3 +88,7 @@ const notifications = reactive({
   systemUpdates: false,
 })
 </script>
+
+<style lang="scss">
+@import 'index';
+</style>

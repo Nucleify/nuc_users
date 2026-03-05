@@ -25,8 +25,14 @@ Route::middleware(['web'])->prefix('api')->group(function (): void {
                 ->name('users.store');
             Route::post('/{id}/avatar', 'uploadAvatar')
                 ->name('users.uploadAvatar');
+            Route::get('/{id}/avatar/show', 'showAvatar')
+                ->name('users.showAvatar');
             Route::delete('/{id}/avatar', 'deleteAvatar')
                 ->name('users.deleteAvatar');
+            Route::put('/{id}/password', 'changePassword')
+                ->name('users.changePassword');
+            Route::patch('/{id}/preferences', 'savePreferences')
+                ->name('users.savePreferences');
             Route::put('/{id}', 'update')
                 ->name('users.update');
             Route::delete('/{id}', 'destroy')
