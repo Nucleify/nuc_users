@@ -9,6 +9,8 @@ uses()->group('api-500');
 
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 use function Pest\Laravel\mock;
 
@@ -101,12 +103,16 @@ describe('500', function (): void {
     });
 
     test('upload avatar api', function (): void {
+        Storage::fake('public');
+
         $this->service
             ->shouldReceive('uploadAvatar')
             ->once()
             ->andThrow(new Exception('Internal Server Error'));
 
-        $this->postJson(route('users.uploadAvatar', ['id' => 1]), ['avatar' => 'fake'])
+        $file = UploadedFile::fake()->image('avatar.jpg');
+
+        $this->postJson(route('users.uploadAvatar', ['id' => 1]), ['avatar' => $file])
             ->assertStatus(500);
     });
 

@@ -10,6 +10,8 @@ const userData = [
     'email' => 'user@example.com',
     'password' => 'password',
     'password_confirmation' => 'password',
+    'language' => 'en',
+    'country' => 'poland',
     'role' => 'user',
 ];
 
@@ -19,6 +21,8 @@ const updatedUserData = [
     'password' => 'password',
     'password_confirmation' => 'password',
     'email' => 'updateduser@example.com',
+    'language' => 'en',
+    'country' => 'poland',
     'role' => 'user',
 ];
 
