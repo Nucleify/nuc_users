@@ -31,8 +31,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-import type { NucDashboardInterface } from 'atomic'
-import { useNucDialog, userRequests, useUserFields } from 'atomic'
+import type { NucDashboardInterface } from 'nucleify'
+import { useNucDialog, userRequests, useUserFields } from 'nucleify'
 
 const props = defineProps<NucDashboardInterface>()
 

@@ -69,8 +69,8 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import type { UseToastInterface } from 'atomic'
-import { useAtomicToast, userRequests } from 'atomic'
+import type { UseToastInterface } from 'nucleify'
+import { useAtomicToast, userRequests } from 'nucleify'
 
 const { t } = useI18n()
 

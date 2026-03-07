@@ -1,5 +1,5 @@
-import type { EntityFieldInterface, UseFieldsInterface } from 'atomic'
-import { roles } from 'atomic'
+import type { EntityFieldInterface, UseFieldsInterface } from 'nucleify'
+import { roles } from 'nucleify'
 
 export function useUserFields(): UseFieldsInterface<EntityFieldInterface> {
   const fieldData: [string, string, string][] = [

@@ -9,8 +9,7 @@ import type {
   GetEntityRequestType,
   LoadingRefType,
   StoreEntityRequestType,
-} from 'atomic'
-
+} from 'nucleify'
 import type { NucUserObjectInterface } from '../../object/User/interfaces'
 
 export interface NucUserRequestsInterface {

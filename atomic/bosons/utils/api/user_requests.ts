@@ -8,7 +8,7 @@ import type {
   EntityCountResultsType,
   EntityResultsType,
   UseLoadingInterface,
-} from 'atomic'
+} from 'nucleify'
 import {
   apiHandle,
   apiRequest,
@@ -18,8 +18,7 @@ import {
   useApiSuccess,
   useAtomicToast,
   useLoading,
-} from 'atomic'
-
+} from 'nucleify'
 import type { NucUserRequestsInterface } from '../../types/api/User/interfaces'
 import type { NucUserObjectInterface } from '../../types/object/User/interfaces'
 

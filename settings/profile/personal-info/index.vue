@@ -226,7 +226,7 @@ import {
   sessionStorageSetItem,
   useAtomicToast,
   userRequests,
-} from 'atomic'
+} from 'nucleify'
 
 const { t } = useI18n()
 
