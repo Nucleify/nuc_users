@@ -10,6 +10,7 @@ import type {
   LoadingRefType,
   StoreEntityRequestType,
 } from 'nucleify'
+
 import type { NucUserObjectInterface } from '../../object/User/interfaces'
 
 export interface NucUserRequestsInterface {
