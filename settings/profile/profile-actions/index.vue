@@ -57,11 +57,7 @@
     :close="closeDeleteDialog"
     @update:visible="isDeleteAccountDialogVisible = $event"
   >
-    <template #content>
-      <p>
-        {{ t('profile-delete-confirm') }}
-      </p>
-    </template>
+    <template #content> <p>{{ t('profile-delete-confirm') }}</p> </template>
   </nuc-dialog>
 </template>
 

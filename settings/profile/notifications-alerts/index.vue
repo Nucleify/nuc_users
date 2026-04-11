@@ -23,7 +23,7 @@
     </div>
   </nuc-settings-card>
 
-  <hr class="settings-card-divider">
+  <hr class="settings-card-divider" />
 
   <nuc-settings-card :heading="t('notifications-push-heading')">
     <div class="profile-form">
@@ -39,7 +39,7 @@
     </div>
   </nuc-settings-card>
 
-  <hr class="settings-card-divider">
+  <hr class="settings-card-divider" />
 
   <nuc-settings-card :heading="t('notifications-activity-heading')">
     <div class="profile-form">

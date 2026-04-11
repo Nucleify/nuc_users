@@ -21,10 +21,7 @@
                 class="profile-avatar-clickable"
                 @click="triggerFileInput"
               />
-              <div
-                class="avatar-edit-corner"
-                @click="triggerFileInput"
-              >
+              <div class="avatar-edit-corner" @click="triggerFileInput">
                 <ad-icon icon="prime:pencil" />
               </div>
               <div
@@ -64,10 +61,11 @@
           class="hidden-file-input"
           @change="onFileSelected"
         />
-
       </section>
 
-      <h4 class="profile-section-title">{{ t('profile-account-preference') }}</h4>
+      <h4 class="profile-section-title">
+        {{ t('profile-account-preference') }}
+      </h4>
 
       <section class="profile-surface">
         <div class="preference-row">
@@ -77,7 +75,9 @@
             </span>
             <div>
               <p class="integration-title">{{ t('profile-language') }}</p>
-              <p class="integration-subtitle">{{ t('profile-language-desc') }}</p>
+              <p class="integration-subtitle">
+                {{ t('profile-language-desc') }}
+              </p>
             </div>
           </div>
           <ad-select
@@ -91,7 +91,7 @@
           />
         </div>
 
-        <hr class="settings-card-divider">
+        <hr class="settings-card-divider" />
 
         <div class="preference-row">
           <div class="preference-left">
@@ -100,7 +100,9 @@
             </span>
             <div>
               <p class="integration-title">{{ t('profile-country') }}</p>
-              <p class="integration-subtitle">{{ t('profile-country-desc') }}</p>
+              <p class="integration-subtitle">
+                {{ t('profile-country-desc') }}
+              </p>
             </div>
           </div>
           <ad-select
@@ -125,7 +127,9 @@
             </span>
             <div>
               <p class="integration-title">{{ t('profile-password') }}</p>
-              <p class="integration-subtitle">{{ t('profile-password-desc') }}</p>
+              <p class="integration-subtitle">
+                {{ t('profile-password-desc') }}
+              </p>
             </div>
           </div>
           <ad-button
@@ -137,7 +141,7 @@
           />
         </div>
 
-        <hr class="settings-card-divider">
+        <hr class="settings-card-divider" />
 
         <div class="preference-row">
           <div class="preference-left">
@@ -171,7 +175,9 @@
       <template #content>
         <div class="password-dialog-fields">
           <div class="password-dialog-field">
-            <label for="current-password">{{ t('profile-current-password') }}</label>
+            <label for="current-password">
+              {{ t('profile-current-password') }}
+            </label>
             <ad-password
               id="nuc-pwd-cur"
               v-model="passwordForm.currentPassword"
@@ -192,7 +198,9 @@
             />
           </div>
           <div class="password-dialog-field">
-            <label for="nuc-pwd-confirm">{{ t('profile-confirm-password') }}</label>
+            <label for="nuc-pwd-confirm">
+              {{ t('profile-confirm-password') }}
+            </label>
             <ad-password
               id="nuc-pwd-confirm"
               v-model="passwordForm.confirmPassword"
@@ -207,7 +215,6 @@
         </div>
       </template>
     </nuc-dialog>
-
   </nuc-settings-card>
 </template>
 
