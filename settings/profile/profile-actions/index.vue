@@ -85,7 +85,7 @@ type ProfileEditFieldType = {
 }
 
 const props = defineProps<{
-  userId: number
+  userId: number | string
   currentLang: string
   accountSinceLabel: string
   editProfileData: ProfileEditDataType

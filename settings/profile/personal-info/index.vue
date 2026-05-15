@@ -246,7 +246,7 @@ const avatarPreview = ref<string | null>(null)
 const isUploadingAvatar = ref(false)
 const isDeletingAvatar = ref(false)
 
-const userId = Number(sessionStorageGetItem('user_id'))
+const userId = sessionStorageGetItem('user_id') ?? ''
 const route = useRoute()
 const router = useRouter()
 const nuxtApp = useNuxtApp()
