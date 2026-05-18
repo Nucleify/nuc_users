@@ -27,9 +27,6 @@ import {
 export async function handleCreateDemoUser(
   ctx: ApiContext
 ): Promise<ApiHandlerResult | null> {
-  if (process.env.NODE_ENV === 'production') {
-    return apiError(403, 'Demo user creation is disabled in production.')
-  }
   try {
     const creds = await createDemoUser(ctx.supabase)
     return apiBody(creds, 201)

@@ -6,7 +6,7 @@ import {
   handleCurrentUser,
 } from './users_handlers'
 
-/** POST /users/demo — dev: konto + przykładowe dane (wyłączone na produkcji) */
+/** POST /users/demo */
 export const routeCreateDemoUser = when(
   { method: 'POST', path: ['users', 'demo'] },
   handleCreateDemoUser
