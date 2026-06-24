@@ -1,10 +1,11 @@
-/**
- *  Module's main file export
- */
 export * from './nuc_users'
 
-/**
- *  Folders exports
- */
-export * from './atomic'
-export * from './settings'
+export * from './atomic/bosons/constants/fields'
+export * from './atomic/bosons/types/api/User/interfaces'
+export * from './atomic/bosons/types/api/User/variables'
+export * from './atomic/bosons/types/object/User/interfaces'
+export * from './atomic/bosons/utils/api/requests'
+export { default as NucUserDashboard } from './atomic/templates/dashboard.vue'
+export { default as NucUsersProfileNotificationsAlerts } from './settings/profile/notifications-alerts/index.vue'
+export { default as NucUsersProfilePersonalInfo } from './settings/profile/personal-info/index.vue'
+export { default as NucProfileActions } from './settings/profile/profile-actions/index.vue'

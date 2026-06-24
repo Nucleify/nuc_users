@@ -231,7 +231,7 @@ import {
   passwordsMatch,
   sessionStorageGetItem,
   sessionStorageSetItem,
-  useAtomicToast,
+  flashToast,
   userRequests,
 } from 'nucleify'
 
@@ -254,7 +254,6 @@ const currentLang = computed(
   () => (route.params.lang as string) || DEFAULT_LANGUAGE
 )
 
-const { flashToast } = useAtomicToast()
 const {
   handleRemoveAvatar,
   handleUploadAvatar,

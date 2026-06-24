@@ -5,17 +5,19 @@ import type {
   EntityResultsType,
   GetAllEntitiesRequestType,
   GetEntityRequestType,
-  LoadingRefType,
+  LoadingType,
   NucUserObjectInterface,
   StoreEntityRequestType,
 } from 'nucleify'
 
-type MutableRef<T> = { value: T }
+type BooleanRef = { value: boolean }
+type NullableStringRef = { value: string | null }
+type FileInputRef = { value: HTMLInputElement | null }
 
 export interface NucUserRequestsInterface {
   results: EntityResultsType<NucUserObjectInterface>
   createdLastWeek: EntityCountResultsType
-  loading: LoadingRefType
+  loading: LoadingType
   getAllUsers: GetAllEntitiesRequestType<NucUserObjectInterface>
   getCountUsersByCreatedLastWeek: GetEntityRequestType
   getUser: GetAllEntitiesRequestType<NucUserObjectInterface>
@@ -51,19 +53,19 @@ export interface NucUserRequestsInterface {
     currentPassword: string,
     newPassword: string,
     newPasswordConfirmation: string,
-    isChangingPassword: MutableRef<boolean>
+    isChangingPassword: BooleanRef
   ) => Promise<void>
   handleUploadAvatar: (
     id: number,
     file: File,
-    isUploadingAvatar: MutableRef<boolean>,
-    fileInputRef: MutableRef<HTMLInputElement | null>,
-    avatarPreview: MutableRef<string | null>
+    isUploadingAvatar: BooleanRef,
+    fileInputRef: FileInputRef,
+    avatarPreview: NullableStringRef
   ) => Promise<void>
   handleRemoveAvatar: (
     id: number,
-    isDeletingAvatar: MutableRef<boolean>,
-    avatarPreview: MutableRef<string | null>
+    isDeletingAvatar: BooleanRef,
+    avatarPreview: NullableStringRef
   ) => Promise<void>
   handleSaveProfile: (
     id: number,
@@ -71,12 +73,12 @@ export interface NucUserRequestsInterface {
     lastName: string,
     email: string,
     phoneNumber: string,
-    isSavingProfile: MutableRef<boolean>
+    isSavingProfile: BooleanRef
   ) => Promise<void>
   handleDeleteAccount: (
     id: number,
     lang: string,
-    isDeleteAccountDialogVisible: MutableRef<boolean>,
-    isDeletingAccount: MutableRef<boolean>
+    isDeleteAccountDialogVisible: BooleanRef,
+    isDeletingAccount: BooleanRef
   ) => Promise<void>
 }

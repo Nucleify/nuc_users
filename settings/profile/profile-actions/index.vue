@@ -65,8 +65,7 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import type { UseToastInterface } from 'nucleify'
-import { useAtomicToast, userRequests } from 'nucleify'
+import { flashToast, userRequests } from 'nucleify'
 
 const { t } = useI18n()
 
@@ -92,7 +91,6 @@ const props = defineProps<{
   profileEditFields: ProfileEditFieldType[]
 }>()
 
-const { flashToast }: UseToastInterface = useAtomicToast()
 const { handleDeleteAccount, handleSaveProfile } = userRequests()
 
 const isSavingProfile = ref(false)
