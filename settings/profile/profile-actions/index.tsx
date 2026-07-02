@@ -98,7 +98,7 @@ export function NucProfileActions({
       <div className="profile-actions">
         <AdButton
           label={t('profile-edit-account')}
-          adType="main"
+          nuiType="main"
           outlined
           size="small"
           disabled={isSavingProfile}
@@ -131,7 +131,7 @@ export function NucProfileActions({
             />
             <AdButton
               label={t('common-save')}
-              adType="main"
+              nuiType="main"
               disabled={isSavingProfile}
               onClick={() => void confirmEditProfile(editDialogData)}
             />

@@ -1,7 +1,7 @@
 <template>
   <section id="users">
     <nuc-entity-datatable-card
-      ad-type="user"
+      nui-type="user"
       :value="data"
       :loading="loading"
       :open-dialog="openDialog"

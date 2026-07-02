@@ -85,7 +85,7 @@
             :options="languageOptions"
             option-label="label"
             option-value="value"
-            ad-type="main"
+            nui-type="main"
             class="profile-select"
             @update:model-value="onLanguageChange"
           />
@@ -110,7 +110,7 @@
             :options="countries"
             option-label="label"
             option-value="value"
-            ad-type="main"
+            nui-type="main"
             class="profile-select"
             @update:model-value="onCountryChange"
           />
@@ -134,7 +134,7 @@
           </div>
           <ad-button
             :label="t('profile-change-password')"
-            ad-type="main"
+            nui-type="main"
             outlined
             size="small"
             @click="isPasswordDialogVisible = true"
@@ -181,7 +181,7 @@
             <ad-password
               id="nuc-pwd-cur"
               v-model="passwordForm.currentPassword"
-              ad-type="main"
+              nui-type="main"
               :feedback="false"
               toggle-mask
               autocomplete="one-time-code"
@@ -192,7 +192,7 @@
             <ad-password
               id="nuc-pwd-new"
               v-model="passwordForm.newPassword"
-              ad-type="main"
+              nui-type="main"
               toggle-mask
               autocomplete="one-time-code"
             />
@@ -204,7 +204,7 @@
             <ad-password
               id="nuc-pwd-confirm"
               v-model="passwordForm.confirmPassword"
-              ad-type="main"
+              nui-type="main"
               toggle-mask
               autocomplete="one-time-code"
               :passwords-match="doPasswordsMatch"

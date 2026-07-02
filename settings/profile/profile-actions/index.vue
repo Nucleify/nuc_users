@@ -8,7 +8,7 @@
     <div class="profile-actions">
       <ad-button
         :label="t('profile-edit-account')"
-        ad-type="main"
+        nui-type="main"
         outlined
         size="small"
         :disabled="isSavingProfile"

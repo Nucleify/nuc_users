@@ -241,7 +241,7 @@ export function NucUsersProfilePersonalInfo(): JSX.Element {
               options={languageOptions}
               optionLabel="label"
               optionValue="value"
-              adType="main"
+              nuiType="main"
               className="profile-select"
               onChange={(event: { value: string }) =>
                 setPreferences((prev) => {
@@ -271,7 +271,7 @@ export function NucUsersProfilePersonalInfo(): JSX.Element {
               options={countries}
               optionLabel="label"
               optionValue="value"
-              adType="main"
+              nuiType="main"
               className="profile-select"
               onChange={(event: { value: string }) =>
                 setPreferences((prev) => {
@@ -300,7 +300,7 @@ export function NucUsersProfilePersonalInfo(): JSX.Element {
             </div>
             <AdButton
               label={t('profile-change-password')}
-              adType="main"
+              nuiType="main"
               outlined
               size="small"
               onClick={() => setIsPasswordDialogVisible(true)}
@@ -341,7 +341,7 @@ export function NucUsersProfilePersonalInfo(): JSX.Element {
             />
             <AdButton
               label={t('profile-update-password')}
-              adType="main"
+              nuiType="main"
               disabled={!isPasswordFormValid}
               onClick={closePasswordDialog}
             />

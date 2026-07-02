@@ -97,7 +97,7 @@ export function NucUserDashboard({
   return (
     <section id="users">
       <NucEntityDataTableCard
-        adType="user"
+        nuiType="user"
         value={data}
         loading={loading}
         openDialog={openDialog}
