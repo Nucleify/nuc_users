@@ -1,5 +1,6 @@
 import type { EntityFieldInterface, UseFieldsInterface } from 'nucleify'
-import { roles } from 'nucleify'
+
+import { roles } from '../features/auth/constants/roles'
 
 export function useUserFields(): UseFieldsInterface<EntityFieldInterface> {
   const fieldData: [string, string, string][] = [

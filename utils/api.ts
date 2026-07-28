@@ -13,13 +13,14 @@ import {
   apiRequest,
   createEntityRequestState,
   createEntityRequestsCore,
-  flashToast,
-  getAndSetUser,
-  removeUserFromSessionStorage,
-  sessionStorageGetItem,
   useApiSuccess,
   useLoading,
 } from 'nucleify'
+
+import { sessionStorageGetItem } from '../../nuc_entities/stores/sessionStorage/get_item'
+import { flashToast } from '../../nuc_modules/utils/flash_toast'
+import { getAndSetUser } from '../features/auth/utils/get_and_set_user'
+import { removeUserFromSessionStorage } from '../features/auth/utils/remove_user_from_session_storage'
 
 const USERS_URL = '/users'
 const USER_URL = '/user'
